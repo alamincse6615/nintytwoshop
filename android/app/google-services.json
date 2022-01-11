@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "743077171231",
+    "project_id": "nintytowshop",
+    "storage_bucket": "nintytowshop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743077171231:android:f5ea66094555eba204852a",
+        "android_client_info": {
+          "package_name": "com.nintytwo.shop.ninty_towshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "743077171231-0dusb40ninsgebk3rrmefq54pdcf4ndg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7KoAOQnwYsytAVqbTi8CG3-Tj-oUZcAU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "743077171231-0dusb40ninsgebk3rrmefq54pdcf4ndg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
