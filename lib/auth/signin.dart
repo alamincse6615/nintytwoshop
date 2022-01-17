@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ninty_towshop/auth/signup.dart';
 import 'package:ninty_towshop/home/home.dart';
@@ -10,9 +12,12 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  var _key = GlobalKey<FormState>();
   final ctrlName = TextEditingController();
   final ctrlEmail = TextEditingController();
   final ctrlPassword = TextEditingController();
+  bool passOff = false;
+  Icon passIcon = Icon(Icons.visibility_off) ;
 
 
   @override
@@ -31,11 +36,20 @@ class _SignInState extends State<SignIn> {
       body: Column(
         children: [
           Form(
+            key: _key,
               child: Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
+                      validator: (val){
+                        if(val == ""){
+                          return "can't be emty";
+                        }
+                        else if(!(val!.length < 50) && !(val.length >10 )){
+                          return "Invalid data";
+                        }
+                      },
                       controller: ctrlEmail,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -46,20 +60,41 @@ class _SignInState extends State<SignIn> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      obscureText: true,
+                      validator: (val){
+                        if(val == ""){
+                          return "con't be emty";
+                        }
+                          else if(!(val!.length < 50) && !(val.length > 10)){
+                          return "Invalid password";
+                        }
+                      },
+                      obscureText: passOff,
                       controller: ctrlPassword,
                       decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                          onTap: (){
+                            setState(() {
+                              if(passOff){
+                                passOff = false;
+                                passIcon = Icon(Icons.visibility);
+                              }else if(!passOff){
+                                passOff = true;
+                                passIcon = Icon(Icons.visibility_off);
+                              }
+                            }
+                          );
+                        },
+                          child: passIcon,
+                        ),
                           border: OutlineInputBorder(),
                           hintText: "Enter your password "
                       ),
                     ),
                   ),
 
-                  ElevatedButton(onPressed: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context)=>Home()),
-                    );
+                  ElevatedButton(
+                      onPressed: (){
+                        signinFunc(ctrlName.text, ctrlEmail.text, ctrlPassword.text);
                   },
                       child: Text("Sign In")),
                   Center(
@@ -86,5 +121,26 @@ class _SignInState extends State<SignIn> {
         ],
       ),
     );
+  }
+  signinFunc(String name, String email, String password)async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    var isValid = _key.currentState!.validate();
+    if (isValid) {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
+      if(userCredential.user != null){
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+
+      }
+
+    } else {
+      return;
+    }
+  }
+  Future<FirebaseApp> firebaseInit()async{
+    FirebaseApp firebaseApp =await Firebase.initializeApp();
+    return firebaseApp;
   }
 }
