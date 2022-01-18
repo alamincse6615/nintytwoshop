@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ninty_towshop/auth/signup.dart';
 
@@ -55,29 +56,35 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              "images/logo.jpg",
-              width: 160,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text(
-                "Happy Shopping!",
-                style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black45
+
+      body: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context,index){
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "images/logo.jpg",
+                  width: 160,
                 ),
-              ),
-            )
-          ],
-        ),
-      ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "Happy Shopping!",
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black45
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      )
     );
   }
 

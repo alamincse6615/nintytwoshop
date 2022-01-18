@@ -16,7 +16,7 @@ class _SignInState extends State<SignIn> {
   final ctrlName = TextEditingController();
   final ctrlEmail = TextEditingController();
   final ctrlPassword = TextEditingController();
-  bool passOff = false;
+  bool passOff = true;
   Icon passIcon = Icon(Icons.visibility_off) ;
 
 
@@ -34,101 +34,108 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         title: Text("Sign In to continue"),
       ),
-      body: Column(
-        children: [
-          Form(
-            key: _key,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      validator: (val){
-                        if(val == ""){
-                          return "can't be emty";
-                        }
-                        else if(!(val!.length < 50) && !(val.length >10 )){
-                          return "Invalid data";
-                        }
-                      },
-                      controller: ctrlEmail,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Enter your email "
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      validator: (val){
-                        if(val == ""){
-                          return "con't be emty";
-                        }
-                          else if(!(val!.length < 50) && !(val.length > 10)){
-                          return "Invalid password";
-                        }
-                      },
-                      obscureText: passOff,
-                      controller: ctrlPassword,
-                      decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
-                          onTap: (){
-                            setState(() {
-                              if(passOff){
-                                passOff = false;
-                                passIcon = Icon(Icons.visibility);
-                              }else if(!passOff){
-                                passOff = true;
-                                passIcon = Icon(Icons.visibility_off);
-                              }
+      body: FutureBuilder(
+        future: firebaseInit(),
+        builder: (context,info){
+          return Column(
+            children: [
+              Form(
+                  key: _key,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          validator: (val){
+                            if(val == ""){
+                              return "can't be emty";
                             }
-                          );
-                        },
-                          child: passIcon,
+                            else if(!(val!.length < 50) && !(val.length >10 )){
+                              return "Invalid data";
+                            }
+                          },
+                          controller: ctrlEmail,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: "Enter your email "
+                          ),
                         ),
-                          border: OutlineInputBorder(),
-                          hintText: "Enter your password "
                       ),
-                    ),
-                  ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          validator: (val){
+                            if(val == ""){
+                              return "con't be emty";
+                            }
+                            else if(!(val!.length < 50) && !(val.length > 10)){
+                              return "Invalid password";
+                            }
+                          },
+                          obscureText: passOff,
+                          controller: ctrlPassword,
+                          decoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    if(passOff){
+                                      passOff = false;
+                                      passIcon = Icon(Icons.visibility);
+                                    }else if(!passOff){
+                                      passOff = true;
+                                      passIcon = Icon(Icons.visibility_off);
+                                    }
+                                  }
+                                  );
+                                },
+                                child: passIcon,
+                              ),
+                              border: OutlineInputBorder(),
+                              hintText: "Enter your password "
+                          ),
+                        ),
+                      ),
 
-                  ElevatedButton(
-                      onPressed: (){
-                        signinFunc(ctrlName.text, ctrlEmail.text, ctrlPassword.text);
-                  },
-                      child: Text("Sign In")),
-                  Center(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Create an Account ? "),
-                        InkWell(
-                            onTap: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context)=>SignUp()),
-                              );
-                            },
-                            child: Text("Sign Up ",style: TextStyle(color: Colors.blue),)),
-                      ],
-                    ),
+                      ElevatedButton(
+                          onPressed: (){
+                            signinFunc(ctrlName.text, ctrlEmail.text, ctrlPassword.text);
+                          },
+                          child: Text("Sign In")),
+                      Center(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Create an Account ? "),
+                            InkWell(
+                                onTap: (){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context)=>SignUp()),
+                                  );
+                                },
+                                child: Text("Sign Up ",style: TextStyle(color: Colors.blue),)),
+                          ],
+                        ),
+                      )
+
+                    ],
                   )
-
-                ],
-              )
-          ),
-        ],
-      ),
+              ),
+            ],
+          );
+        },
+      )
     );
   }
   signinFunc(String name, String email, String password)async {
     FirebaseAuth auth = FirebaseAuth.instance;
     var isValid = _key.currentState!.validate();
     if (isValid) {
-      UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(email: email, password: password);
       if(userCredential.user != null){
+
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Home()),

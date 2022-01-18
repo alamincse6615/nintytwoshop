@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:ninty_towshop/auth/signin.dart';
 import 'package:ninty_towshop/home/home.dart';
@@ -18,6 +19,15 @@ class _SignUpState extends State<SignUp> {
   final ctrlPassword = TextEditingController();
   bool passOff = true;
   Icon passIcon = Icon(Icons.visibility_off);
+
+
+  late DatabaseReference _databaseReference;
+
+
+  @override
+  void initState() {
+    _databaseReference = FirebaseDatabase.instance.reference();
+  }
 
   @override
   void dispose() {
@@ -144,12 +154,9 @@ class _SignUpState extends State<SignUp> {
     var isValid = _key.currentState!.validate();
     if (isValid) {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
-      if(userCredential.user != null){
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
 
+      if(userCredential.user != null){
+        _saveUserInfo(name,email,password,auth.currentUser!.uid);
       }
 
     } else {
@@ -159,5 +166,18 @@ class _SignUpState extends State<SignUp> {
   Future<FirebaseApp> firebaseInit()async{
     FirebaseApp firebaseApp =await Firebase.initializeApp();
     return firebaseApp;
+  }
+  _saveUserInfo(String name, String email,String password, String uid){
+    Map<dynamic,dynamic> info = {
+      "name":name,
+      "email":email,
+      "address":password,
+      "uid":uid,
+    };
+    _databaseReference.child("Users").child(uid).set(info);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Home()),
+    );
   }
 }

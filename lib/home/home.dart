@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -11,6 +13,22 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  late DatabaseReference _databaseReference;
+
+
+  @override
+  void initState() {
+    _databaseReference = FirebaseDatabase.instance.reference();
+  }
+
+  Map<dynamic,dynamic> info = {
+    "name":"yasin",
+    "phn":"yasin3452115",
+    "email":"yasin@gmail.com",
+    "address":"shibchar,madaripur",
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +37,16 @@ class _HomeState extends State<Home> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Text(auth.currentUser!.uid.toString()),
+
+              RaisedButton(
+                onPressed: (){
+                  _databaseReference.child(auth.currentUser!.uid).set(info);
+                },
+                color: Colors.green,
+                child: Text("add info"),
+              ),
+
               Container(
                 height: 48,
                 child: Row(
@@ -180,6 +208,17 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
+      ),
+      endDrawer: Drawer(
+        child: ListView(children: [
+          ListTile(
+            title: Text("add category"),
+            trailing: Icon(Icons.arrow_forward_ios),
+
+          )
+        ],),
+
+
       ),
     );
   }
