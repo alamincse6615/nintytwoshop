@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ninty_towshop/auth/signup.dart';
+import 'package:ninty_towshop/backend/adminHome.dart';
 import 'package:ninty_towshop/home/home.dart';
 
 class SignIn extends StatefulWidget {
@@ -135,11 +136,19 @@ class _SignInState extends State<SignIn> {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(email: email, password: password);
       if(userCredential.user != null){
 
+        if(email == 'md.shohelshikder2000@gmail.com' && auth.currentUser!.email == 'md.shohelshikder2000@gmail.com'){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => adminHome()),
+          );
+        }else{
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Home()),
+          );
+        }
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
+
 
       }
 
