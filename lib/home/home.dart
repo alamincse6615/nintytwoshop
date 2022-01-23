@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:ninty_towshop/profile/profile.dart';
 
 
 class Home extends StatefulWidget {
@@ -41,7 +42,7 @@ class _HomeState extends State<Home> {
 
               RaisedButton(
                 onPressed: (){
-                  _databaseReference.child(auth.currentUser!.uid).set(info);
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Profile()));
                 },
                 color: Colors.green,
                 child: Text("add info"),
