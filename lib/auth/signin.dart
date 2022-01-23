@@ -56,6 +56,10 @@ class _SignInState extends State<SignIn> {
                             }
                           },
                           controller: ctrlEmail,
+                          maxLines: 1,
+                          keyboardAppearance: Brightness.light,
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: "Enter your email "
@@ -75,6 +79,9 @@ class _SignInState extends State<SignIn> {
                           },
                           obscureText: passOff,
                           controller: ctrlPassword,
+                          autofocus: false,
+                          enableSuggestions: false,
+                          autocorrect: false,
                           decoration: InputDecoration(
                               suffixIcon: GestureDetector(
                                 onTap: (){

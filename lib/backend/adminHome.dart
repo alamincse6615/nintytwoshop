@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:ninty_towshop/backend/category.dart';
+import 'package:ninty_towshop/backend/products.dart';
+import 'package:ninty_towshop/backend/subCategory.dart';
 
 class adminHome extends StatefulWidget {
   const adminHome({Key? key}) : super(key: key);
@@ -38,7 +40,31 @@ class _adminHomeState extends State<adminHome> {
                       )
                   );
               },
-            )
+            ),
+            ListTile(
+              title: Text("Sub Category"),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context)=>subCategory(),
+                      )
+                  );
+              },
+            ),
+            ListTile(
+              title: Text("Product"),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context)=>Products(),
+                      )
+                  );
+              },
+            ),
           ],
         ),
       ),
