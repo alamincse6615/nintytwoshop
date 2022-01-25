@@ -45,7 +45,7 @@ class _HomeState extends State<Home> {
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>Profile()));
                 },
                 color: Colors.green,
-                child: Text("add info"),
+                child: Text("Add info"),
               ),
 
               Container(
