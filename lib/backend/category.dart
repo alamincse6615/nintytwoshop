@@ -21,7 +21,7 @@ class _CategoryState extends State<Category> {
 
   @override
   Widget build(BuildContext context) {
-    final category = _databaseReference.child("subCategory");
+    final category = _databaseReference.child("Category");
     return Scaffold(
       appBar: AppBar(
         title: Text("Category"),
@@ -29,6 +29,7 @@ class _CategoryState extends State<Category> {
       body: Column(
         children: [
           Container(
+            height: MediaQuery.of(context).size.height*.1,
             child: Center(
               child: ElevatedButton(
                 child: Text("Add Category"),
@@ -44,36 +45,66 @@ class _CategoryState extends State<Category> {
             ),
           ),
           Container(
+            height: MediaQuery.of(context).size.height*.785,
             child: FirebaseAnimatedList(
-                 query: category,
+
                 itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index){
-                  return Card(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
-                                onPressed: (){},
-                                icon: Icon(
-                                  Icons.edit
-                                ),
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Card(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                  onPressed: (){},
+                                  icon: Icon(
+                                    Icons.edit
+                                  ),
+                              ),
+                              IconButton(
+                                  onPressed: (){},
+                                  icon: Icon(
+                                    Icons.delete
+                                  ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            height: 1,
+                            color: Colors.black26,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Image.network(
+                                  snapshot.child("image").value.toString(),
+                                  height: 200,
+                              ),
                             ),
-                            IconButton(
-                                onPressed: (){},
-                                icon: Icon(
-                                  Icons.delete
-                                ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                                snapshot.child("categoryNameEn").value.toString(),
+                              style: TextStyle(fontSize: 18),
                             ),
-                          ],
-                        ),
-                        Container(
-                          height: 2,
-                          color: Colors.black26,
-                        )
-                      ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              snapshot.child("CategoryNameBn").value.toString(),
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
-                }
+                },
+              query: category,
             ),
           )
         ],
