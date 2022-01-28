@@ -53,6 +53,7 @@ class _subCategoryState extends State<subCategory> {
                     child: Card(
                       child: Column(
                         children: [
+                          Image.network(snapshot.child("image").value.toString()),
                           Text(snapshot.child("cat_id").value.toString()),
                           Text(snapshot.child("subCategoryNameBn").value.toString())
                         ],
