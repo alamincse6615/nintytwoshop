@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ninty_towshop/backend/addCategory.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:ninty_towshop/backend/categoryEdit.dart';
 
 class Category extends StatefulWidget {
   const Category({Key? key}) : super(key: key);
@@ -59,7 +60,16 @@ class _CategoryState extends State<Category> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               IconButton(
-                                  onPressed: (){},
+                                  onPressed: (){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context)=>categoryEdit(
+                                              snapshot.child("id").value
+                                            )
+                                        )
+                                    );
+                                  },
                                   icon: Icon(
                                     Icons.edit
                                   ),
