@@ -65,7 +65,10 @@ class _CategoryState extends State<Category> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context)=>categoryEdit(
-                                              snapshot.child("id").value
+                                              snapshot.child("id").value.toString(),
+                                                snapshot.child("image").value.toString(),
+                                              snapshot.child("categoryNameEn").value.toString(),
+                                              snapshot.child("CategoryNameBn").value.toString()
                                             )
                                         )
                                     );
@@ -75,7 +78,11 @@ class _CategoryState extends State<Category> {
                                   ),
                               ),
                               IconButton(
-                                  onPressed: (){},
+                                  onPressed: (){
+                                    setState(() {
+                                      _databaseReference.child("Category").child(snapshot.child("id").value.toString()).remove();
+                                    });
+                                  },
                                   icon: Icon(
                                     Icons.delete
                                   ),

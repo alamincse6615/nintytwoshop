@@ -11,9 +11,12 @@ import 'package:ninty_towshop/backend/category.dart';
 
 class categoryEdit extends StatefulWidget {
   var id;
+  String image;
+  String nameEn;
+  String nameBn;
 
 
-  categoryEdit(this.id);
+  categoryEdit(this.id, this.image, this.nameEn, this.nameBn);
 
   @override
   _categoryEditState createState() => _categoryEditState();
@@ -27,16 +30,21 @@ class _categoryEditState extends State<categoryEdit> {
   String? imageUrl;
   late DatabaseReference _databaseReference;
 
-  @override
-  void initState() {
-    _databaseReference = FirebaseDatabase.instance.reference();
-  }
 
   @override
   void dispose() {
     ctrlCategoryNameEn.dispose();
     ctrlCategoryNameBn.dispose();
   }
+
+  @override
+  void initState() {
+    _databaseReference = FirebaseDatabase.instance.reference();
+    ctrlCategoryNameEn.text = widget.nameEn;
+    ctrlCategoryNameBn.text = widget.nameBn;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +71,7 @@ class _categoryEditState extends State<categoryEdit> {
                           controller: ctrlCategoryNameEn,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: "Category Name En"
+                              hintText: widget.nameEn
                           ),
                         ),
                       ),
@@ -78,13 +86,13 @@ class _categoryEditState extends State<categoryEdit> {
                           controller: ctrlCategoryNameBn,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: "Category Name Bn"
+                              hintText: widget.nameBn
                           ),
                         ),
                       ),
                       Container(
                         height: 110,
-                        child: ImageFile==null? Image.network("https://cdn5.vectorstock.com/i/1000x1000/71/64/gallery-icon-vector-26537164.jpg"): Image.file(ImageFile!),
+                        child: ImageFile==null? Image.network(widget.image): Image.file(ImageFile!),
                       ),
                       ElevatedButton(
                         onPressed: (){
@@ -136,7 +144,12 @@ class _categoryEditState extends State<categoryEdit> {
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(
                             onPressed: (){
-                              _saveCategory(ctrlCategoryNameEn.text,ctrlCategoryNameBn.text,ImageFile!);
+                              if(ImageFile==null){
+                                _saveCategory(ctrlCategoryNameEn.text,ctrlCategoryNameBn.text);
+                              }else{
+                                _saveCategoryImage(ctrlCategoryNameEn.text,ctrlCategoryNameBn.text,ImageFile!);
+                              }
+
                             },
                             child: Text("Add")
                         ),
@@ -151,13 +164,12 @@ class _categoryEditState extends State<categoryEdit> {
     );
   }
 
-  _saveCategory(String ctNameEn, String ctNameBn, File imageFile)async{
+  _saveCategoryImage(String ctNameEn, String ctNameBn, File imageFile)async{
     FirebaseAuth auth = FirebaseAuth.instance;
     var isValid = _key.currentState!.validate();
     if(isValid){
-      var _id = _databaseReference.child("Category").push().key;
 
-      fStorage.Reference reference = fStorage.FirebaseStorage.instance.ref().child("Category").child(_id.toString());
+      fStorage.Reference reference = fStorage.FirebaseStorage.instance.ref().child("Category").child(widget.id);
       fStorage.UploadTask uploadTask = reference.putFile(imageFile);
       fStorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
       await taskSnapshot.ref.getDownloadURL().then((url){
@@ -165,14 +177,13 @@ class _categoryEditState extends State<categoryEdit> {
       });
 
       Map<dynamic,dynamic> info = {
-        "id":_id,
         "uid": auth.currentUser!.uid,
         "categoryNameEn":ctNameEn,
         "CategoryNameBn":ctNameBn,
         "image":imageUrl,
         "time":""
       };
-      _databaseReference.child("Category").child(_id.toString()).set(info);
+      _databaseReference.child("Category").child(widget.id).set(info);
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -183,6 +194,36 @@ class _categoryEditState extends State<categoryEdit> {
       return;
     }
   }
+
+
+
+
+  _saveCategory(String ctNameEn, String ctNameBn)async{
+    FirebaseAuth auth = FirebaseAuth.instance;
+    var isValid = _key.currentState!.validate();
+    if(isValid){
+
+      Map<dynamic,dynamic> info = {
+        "uid": auth.currentUser!.uid,
+        "categoryNameEn":ctNameEn,
+        "CategoryNameBn":ctNameBn,
+        "image":widget.image,
+        "time":""
+      };
+      _databaseReference.child("Category").child(widget.id).set(info);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context)=>Category()
+          )
+      );
+    }else{
+      return;
+    }
+  }
+
+
+
 
 
   Future<FirebaseApp> firebaseInit()async{
